@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Day 2｜自駕｜博多 ➝ 由布院 ➝ 九重（可編輯）</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --surface:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --chip:#f3f4f6;
+      --accent:#2563eb;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Hiragino Sans", "Helvetica Neue", Arial;
+      line-height:1.6;
+    }
+    a{color:inherit}
+
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 26px}
+
+    header{
+      display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+      margin-bottom:14px;
+    }
+    h1{margin:0;font-size:20px;letter-spacing:.2px}
+    .sub{color:var(--muted);font-size:12px}
+
+    .board{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:var(--surface);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    /* Panels */
+    .panel{padding:16px 14px 18px}
+
+    .dayHeader{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+      padding:6px 6px 12px;
+    }
+    .dayHeaderRight{margin-left:auto;padding-top:10px}
+    .dayDateRight{color:var(--text);font-size:18px;font-weight:800;line-height:1.2}
+    .dayTitle{display:flex;gap:12px;align-items:center;}
+    .num{
+      width:40px;height:40px;border-radius:14px;
+      display:grid;place-items:center;
+      border:1px solid rgba(96,165,250,.45);
+      background:rgba(96,165,250,.10);
+      font-weight:800;
+    }
+    .tblock{min-width:0;padding-top:2px}
+    .tblock h2{margin:0;font-size:18px;line-height:1.2}
+
+    /* Accordion sections */
+    details{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#ffffff;
+      overflow:hidden;
+      margin-top:10px;
+    }
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:12px 12px;
+      display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+      font-weight:700;
+    }
+    summary span.sumText{flex:1;min-width:0;white-space:normal;word-break:break-word;line-height:1.5;}
+    summary::-webkit-details-marker{display:none}
+    .chev{color:var(--muted);transition:transform .15s ease}
+    details[open] .chev{transform:rotate(180deg)}
+
+    .content{padding:0 12px 12px}
+
+    /* Day2 專用：收合內容的內距 */
+    .dContent{padding:0 14px 12px}
+
+    /* Timeline */
+    .timeline{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#ffffff;
+      overflow:hidden;
+      --timeCol:92px;--tGap:12px;--tPad:12px;
+    }
+    .tRow{
+      display:grid;
+      grid-template-columns: 92px 1fr;
+      gap:12px;
+      padding:12px;
+      border-bottom:none;
+    }
+    .tRow:last-child{border-bottom:none}
+    .tRow > *{min-width:0;}
+    .time{font-variant-numeric: tabular-nums;font-weight:800}
+    .meta{color:var(--muted);font-size:12px;margin-top:3px;line-height:1.4}
+    .place{font-weight:700}
+
+    /* Day2：時間軸內右欄對齊主內容 */
+    .timeline .alignWithMain{margin-left:calc(-1*(var(--timeCol) + var(--tGap) + var(--tPad)));margin-right:calc(-1*var(--tPad))}
+    .timeline .alignPad{margin-left:calc(-1*var(--tPad));margin-right:calc(-1*var(--tPad))}
+    .tRow .subline{grid-column:1 / -1;margin-top:2px}
+
+    .dSplit{padding-top:6px}
+    .dLabel{font-size:12px;font-weight:800;color:var(--text);opacity:.78;letter-spacing:.2px;margin:6px 0 4px}
+    .dList{margin:0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.6}
+    .dDivider{height:1px;background:rgba(0,0,0,.06);margin:10px 0}
+
+    /* Buttons */
+    .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .btn{
+      text-decoration:none;
+      font-size:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(96,165,250,.10);
+    }
+
+    /* Gallery */
+    .galleryWrap{margin-top:10px}
+    .galleryTitle{margin:0 0 8px;padding:0 2px;font-weight:800;font-size:13px}
+
+    .galleryRow{
+      display:flex;
+      flex-direction:row;
+      gap:12px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+    .galleryRow::-webkit-scrollbar{height:8px}
+    .galleryRow::-webkit-scrollbar-thumb{background:rgba(17,24,39,.12);border-radius:999px}
+    .galleryRow::-webkit-scrollbar-track{background:transparent}
+
+    .gItem{
+      flex:0 0 auto;
+      width:220px;
+      aspect-ratio:4/3;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#fff;
+      scroll-snap-align:start;
+      box-shadow:0 6px 16px rgba(0,0,0,.06);
+      cursor:pointer;
+      position:relative
+    }
+    .gItem img{width:100%;height:100%;object-fit:cover;display:block}
+
+    /* 縮圖文字說明 */
+    .gItem[data-caption]::after{
+      content: attr(data-caption);
+      position:absolute;
+      left:8px; right:8px; bottom:8px;
+      padding:6px 8px;
+      border-radius:12px;
+      background:rgba(17,24,39,.62);
+      color:#fff;
+      font-size:12px;
+      line-height:1.35;
+      letter-spacing:.2px;
+      pointer-events:none;
+      text-shadow:0 1px 2px rgba(0,0,0,.25);
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    /* Lightbox */
+    .lbModal{position:fixed;inset:0;z-index:60;display:none}
+    .lbModal.open{display:block}
+    .lbBackdrop{position:absolute;inset:0;background:rgba(17,24,39,.78)}
+    .lbStage{position:absolute;inset:0;display:grid;place-items:center;padding:18px}
+    .lbImg{max-width:min(980px,92vw);max-height:82vh;width:auto;height:auto;border-radius:16px;border:1px solid rgba(255,255,255,.18);box-shadow:0 12px 36px rgba(0,0,0,.35);background:#000;object-fit:contain}
+    .lbClose{position:absolute;top:14px;right:14px;border:1px solid rgba(255,255,255,.22);background:rgba(17,24,39,.55);color:#fff;border-radius:12px;padding:8px 10px;cursor:pointer;font-size:14px;line-height:1;user-select:none}
+    .lbNav{position:absolute;top:14px;left:14px;display:flex;gap:8px;align-items:center}
+    .lbBtn{border:1px solid rgba(255,255,255,.22);background:rgba(17,24,39,.55);color:#fff;border-radius:12px;padding:8px 10px;cursor:pointer;font-size:14px;line-height:1;user-select:none}
+    .lbCount{color:rgba(255,255,255,.85);font-size:12px;margin-left:6px}
+
+    @media (max-width: 640px){
+      .tRow{grid-template-columns: 72px 1fr; gap:8px; padding:12px}
+      .num{width:38px;height:38px}
+      .tblock h2{font-size:17px}
+    }
+
+    /* Day2：三個 alignWithMain gallery（散策／小食／Day2 照片）加大安全內距 */
+    .galleryWrap.alignWithMain .galleryRow{
+      padding-left: 14px;
+      padding-right: 14px;
+      scroll-padding-left: 14px;
+      scroll-padding-right: 14px;
+    }
+
+    /* Day2：把兩段文字到 gallery 的距離稍微壓縮（不影響結構） */
+    @supports selector(.tRow:has(.galleryWrap)){
+      .timeline .tRow:has(.galleryWrap[aria-label="由布院小食照片"]) { padding-top: 2px; padding-bottom: 4px; }
+      .timeline .tRow:has(.galleryWrap[aria-label="由布院照片"]) { padding-top: 0px; padding-bottom: 2px; }
+    }
+    .timeline .galleryWrap[aria-label="由布院小食照片"]{ margin-top: 0px; }
+    .timeline .galleryWrap[aria-label="由布院照片"]{ margin-top: -10px; }
+
+    /* 九重夢大吊橋：文字到 gallery 間距與由布院小食區一致 */
+    @supports selector(.tRow:has(.galleryWrap)){
+      .timeline .tRow:has(.galleryWrap[aria-label="九重夢大吊橋照片"]) { padding-top: 2px; padding-bottom: 4px; }
+    }
+    .timeline .galleryWrap[aria-label="九重夢大吊橋照片"]{ margin-top: 0px; }
+
+    /* 旅館華柚：文字到 gallery 行高與其他區一致 */
+    @supports selector(.tRow:has(.galleryWrap)){
+      .timeline .tRow:has(.galleryWrap[aria-label="旅館華柚照片"]) { padding-top: 2px; padding-bottom: 4px; }
+    }
+    .timeline .galleryWrap[aria-label="旅館華柚照片"]{ margin-top: 0px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Day 2｜自駕｜博多 ➝ 由布院 ➝ 九重</h1>
+        <div class="sub">03/24（二）｜（獨立 Day2 編輯檔）</div>
+      </div>
+      <div class="sub">✅ 你可以在這個檔案自由改內容，改好再貼回主行程</div>
+    </header>
+
+    <div class="board">
+      <section class="panel" id="day2" aria-label="Day 2 行程">
+
+        <div class="dayHeader">
+          <div class="dayTitle">
+            <div class="num">2</div>
+            <div class="tblock"><h2>自駕｜博多 ➝ 由布院 ➝ 九重</h2></div>
+          </div>
+          <div class="dayHeaderRight"><div class="dayDateRight">03/24（二）</div></div>
+        </div>
+
+        <div class="dayBody">
+          <div class="content">
+
+            <div class="timeline">
+              <div class="tRow">
+                <div><div class="time">08:00–08:30</div></div>
+                <div>
+                  <div class="place">Budget Car Rental Hakata Gion 取車</div>
+                  <div class="meta">上博多東或半道橋交流道 → 接大分自動車道</div>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time"></div></div>
+                <div>
+                  <details class="alignWithMain" style="margin-top:0">
+                    <summary><span class="sumText">🚗 取車前注意事項 / 行車重點提醒</span><span class="chev">⌄</span></summary>
+                    <div class="dContent">
+                      <div class="dSplit">
+                        <div class="dLabel">取車前注意事項</div>
+                        <ul class="dList">
+                          <li><strong>取車時間預估：</strong>(總計約 30 - 60 分鐘)。</li>
+                          <li><strong>ETC 卡確認：</strong>現場取車時請務必確認 ETC 卡是否已插入機器並能正常運作。</li>
+                          <li><strong>外觀拍照錄影：</strong>取車時與店員巡視車身，若有任何細微刮痕或凹痕應立即提出，並建議自行拍照或錄影存證，避免還車糾紛。</li>
+                          <li><strong>功能確認：</strong>檢查燈光（頭燈、轉向燈）、雨刷、空調是否正常，並熟悉導航系統的操作。</li>
+                          <li><strong>油品種類/油量確認：</strong>通常是加Regular（レギュラー，紅色油槍），確認油箱是否有加滿。</li>
+                          <li><strong>應急處理：</strong>索取中文緊急聯絡卡、確認三角架位置。</li>
+                        </ul>
+
+                        <div class="dDivider" role="separator" aria-hidden="true"></div>
+
+                        <div class="dLabel">行車重點提醒</div>
+                        <ul class="dList">
+                          <li>日本為右駕。請隨時默念口訣：<strong style="color:#2563eb">「左小轉、右大轉」</strong>。</li>
+                          <li>高速路段為主：注意速限與測速照相，保持車距。</li>
+                          <li>經過收費站時，務必找有紫色「ETC」標誌 的車道，並減速至 20km/h 以下讓感應器讀取。</li>
+                          <li>在山路彎道或叉路時，特別容易因為習慣而開錯車道，務必跟著前車或注意地面箭頭標示。</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </details>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time">09:20–<br>09:40</div></div>
+                <div>
+                  <div class="place">山田服務區（首選）／玖珠（第2選擇）</div>
+                  <div class="meta">山田SA限定：推薦那裡的「巨峰葡萄」相關產品或當地產的乳製品。</div>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time">10:30–<br>13:30</div></div>
+                <div>
+                  <div class="place">由布院 ＆ 金鱗湖</div>
+                  <div class="meta">下「由布院 IC」交流道後，市區車流較慢，預留停車時間。</div>
+                </div>
+                <div class="subline">
+                  <details class="alignPad" style="margin-top:0">
+                    <summary><span class="sumText">🅿 停車建議</span><span class="chev">⌄</span></summary>
+                    <div class="dContent">
+                      <ul style="margin:0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.6">
+                        <li>至湯布院中央児童公園，周邊：湯布院停車場 (Yufuin Parking Lot)，不限時平日￥300，需自行準備零錢投進料金箱，步行至觀光大街約 3 分鐘。如遇停滿：NPC24H 湯布院湯之坪街道停車場。</li>
+                        <li>金鱗湖入口處：金鱗湖入口前駐車場 (Kinrinkoiriguchizen Parking Lot)，位置在湖畔入口正對面，單日￥400，進場道路較窄，行駛時請多加留意行人。如遇停滿：Times 湯布院金鱗湖 (Times Yufuin Lake Kinrin)、湯布院停車場 (Yufuin Parking Lot)。</li>
+                      </ul>
+
+                      <div class="galleryWrap" aria-label="停車照片">
+                        <p class="galleryTitle">📷 停車位置參考</p>
+                        <div class="galleryRow" role="list">
+                          <div class="gItem" role="listitem" data-caption="湯布院停車場｜外觀與車位"><img loading="lazy" src="day2/1.jpg" data-full="day2/1.jpg" alt="湯布院停車場 外觀"></div>
+                          <div class="gItem" role="listitem" data-caption="料金箱｜請自備零錢投幣"><img loading="lazy" src="day2/2.jpg" data-full="day2/2.jpg" alt="料金箱"></div>
+                          <div class="gItem" role="listitem" data-caption="金鱗湖入口前駐車場｜入口前小屋"><img loading="lazy" src="day2/3.jpg" data-full="day2/3.jpg" alt="金鱗湖入口前駐車場"></div>
+                          <div class="gItem" role="listitem" data-caption="金鱗湖停車｜單日￥400 指示牌"><img loading="lazy" src="day2/4.jpg" data-full="day2/4.jpg" alt="金鱗湖停車 400円"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </details>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div class="alignPad" style="grid-column:1 / -1; padding:6px 12px 2px 12px; font-size:16px; font-weight:600; color:var(--text); opacity:.85; line-height:1.6;">
+                  📍由布院（又稱湯布院），以夢幻的「金鱗湖」、時尚的「湯之坪街道」和精緻的溫泉旅館聞名，是日本湧泉量第二大的著名溫泉勝地。
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time"></div></div>
+                <div>
+                  <div class="galleryWrap alignWithMain" aria-label="由布院照片">
+                    <p class="galleryTitle">📷 由布院散策</p>
+                    <div class="galleryRow" role="list">
+                      <div class="gItem" role="listitem" data-caption="由布院導覽手冊(中文)">
+                        <a href="day2/由布院導覽手冊(中文).pdf" target="_blank" rel="noopener" style="display:block;width:100%;height:100%;text-decoration:none">
+                          <img loading="lazy" src="day2/封面.jpg" alt="由布院導覽手冊 封面" data-no-lightbox="1">
+                        </a>
+                      </div>
+                      <div class="gItem" role="listitem" data-caption="湯之坪街道與由布岳"><img loading="lazy" src="day2/5.jpg" data-full="day2/5.jpg" alt="湯之坪街道與由布岳"></div>
+                      <div class="gItem" role="listitem" data-caption="金鱗湖鳥居與湖景"><img loading="lazy" src="day2/6.jpg" data-full="day2/6.jpg" alt="金鱗湖鳥居"></div>
+                      <div class="gItem" role="listitem" data-caption="童話風小店街景"><img loading="lazy" src="day2/7.jpg" data-full="day2/7.jpg" alt="由布院特色小店"></div>
+                      <div class="gItem" role="listitem" data-caption="湯之坪街道散策"><img loading="lazy" src="day2/8.jpg" data-full="day2/8.jpg" alt="湯之坪街道"></div>
+                      <div class="gItem" role="listitem" data-caption="湯布院花卉村"><img loading="lazy" src="day2/9.jpg" data-full="day2/9.jpg" alt="湯布院花卉村"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div class="alignPad" style="grid-column:1 / -1; padding:6px 12px 2px 12px; font-size:16px; font-weight:600; color:var(--text); opacity:.85; line-height:1.6;">
+                  🍢 由布院小食
+                  <div style="margin-top:6px;font-size:13px;font-weight:400;line-height:1.6;color:var(--muted)">
+                  <div><strong>金賞可樂餅</strong>｜本店位置較靠近金鱗湖，招牌必點是「金賞可樂餅」。</div>
+                  <div><strong>花麴菊家</strong>｜布丁銅鑼燒 (Pudding Dorayaki) 是該店最人氣商品，3 月常有季節限定口味（如草莓布丁或甘王草莓內餡）。</div>
+                  <div><strong>B‑SPEAK 蛋糕卷</strong>｜小份 (1/3) 通常在 11:00 前售罄，若 10:30 以後才到由布院，建議停好車先去預約或購買，再回來逛街。</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time"></div></div>
+                <div>
+                  <div class="galleryWrap alignWithMain" aria-label="由布院小食照片">
+                    <p class="galleryTitle">📷 由布院小食</p>
+                    <div class="galleryRow" role="list">
+                      <div class="gItem" role="listitem" data-caption="湯之坪街道美食地圖"><img loading="lazy" src="day2/10.jpg" data-full="day2/10.jpg" alt="湯之坪街道地圖"></div>
+                      <div class="gItem" role="listitem" data-caption="B SPEAK 本店｜蛋糕卷"><img loading="lazy" src="day2/11.jpg" data-full="day2/11.jpg" alt="B SPEAK 蛋糕卷"></div>
+                      <div class="gItem" role="listitem" data-caption="金賞可樂餅｜現炸熱食"><img loading="lazy" src="day2/12.jpg" data-full="day2/12.jpg" alt="金賞可樂餅"></div>
+                      <div class="gItem" role="listitem" data-caption="花麴菊家｜銅鑼燒"><img loading="lazy" src="day2/13.jpg" data-full="day2/13.jpg" alt="花麴菊家"></div>
+                      <div class="gItem" role="listitem" data-caption="SNOOPY 茶屋｜由布院"><img loading="lazy" src="day2/14.jpg" data-full="day2/14.jpg" alt="SNOOPY 茶屋"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time">13:45–<br>14:15</div></div>
+                <div>
+                  <div class="place">狭霧台</div>
+                  <div class="meta">由布院往九重方向是上坡，狹霧台位於左手邊，是俯瞰由布院盆地的最佳位置，3月底氣溫仍低，下車拍照記得穿外套。</div>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time">15:00–<br>16:00</div></div>
+                <div>
+                  <div class="place">九重「夢」大吊橋</div>
+                  <div class="meta">從由布院 ➝ 九重，經由被選為「日本百名道」之一的「山並快速道路(縣道 11 號)」前往，部分路段彎道角度大有視覺盲點，直線道亦非常直，皆需特別注意時速表。另傍晚時分偶爾會有野生動物（如鹿或野兔）出沒。
+<div style="margin-top:6px;line-height:1.6;color:var(--muted)">📸 最美路段 長者原｜筆直的公路正對著冒煙的硫磺山與九重連山，視覺震撼力極強是全路段最著名的景點，可在那裡稍微停留約 5 分鐘拍照。</div>
+<div style="margin-top:6px;line-height:1.6;color:var(--muted)">🌉 九重「夢」大吊橋｜為日本最高的人行吊橋，成人門票￥500可體驗如同在天上行走一般的感受，最後入場時間通常是 16:30（17:00 關門）。九重一帶午後易起霧，若天氣不佳可縮短吊橋停留。</div></div>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time"></div></div>
+                <div>
+                  <div class="galleryWrap alignWithMain" aria-label="九重夢大吊橋照片">
+                    <p class="galleryTitle">📷 九重「夢」大吊橋</p>
+                    <div class="galleryRow" role="list">
+                      <div class="gItem" role="listitem" data-caption="長者原｜阿蘇九重國立公園入口"><img loading="lazy" src="day2/15.jpg" data-full="day2/15.jpg" alt="長者原入口"></div>
+                      <div class="gItem" role="listitem" data-caption="長者原直線公路與九重連山"><img loading="lazy" src="day2/16.jpg" data-full="day2/16.jpg" alt="長者原直線公路"></div>
+                      <div class="gItem" role="listitem" data-caption="山並快速道路｜草原高原景觀"><img loading="lazy" src="day2/17.jpg" data-full="day2/17.jpg" alt="山並快速道路"></div>
+                      <div class="gItem" role="listitem" data-caption="九重高原公路秋景"><img loading="lazy" src="day2/18.jpg" data-full="day2/18.jpg" alt="九重高原公路"></div>
+                      <div class="gItem" role="listitem" data-caption="九重高原草原景色"><img loading="lazy" src="day2/19.jpg" data-full="day2/19.jpg" alt="九重草原"></div>
+                      <div class="gItem" role="listitem" data-caption="九重夢大吊橋｜遠景"><img loading="lazy" src="day2/20.jpg" data-full="day2/20.jpg" alt="九重夢大吊橋"></div>
+                      <div class="gItem" role="listitem" data-caption="九重夢大吊橋｜紅葉季"><img loading="lazy" src="day2/21.jpg" data-full="day2/21.jpg" alt="九重夢大吊橋紅葉"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time">18:00</div></div>
+                <div>
+                  <div class="place">抵達 旅館華柚</div>
+                  <div class="meta">⚠ 狹窄路段：從國道 442 號轉進旅館華柚最後 1–2 公里，路寬會明顯變窄（僅能容納 1.5 台車寬），且兩側多為樹林。若對向有來車，請找稍寬處減速會車。<br>🌙 夜間視線：這區域屬於溫泉秘境，路燈少入夜視線較差，如果17:30離開吊橋，抵達旅館時天色已暗，務必開啟遠光燈（對向有車時記得切換回近光燈）。<br>🛒 補給提醒：附近沒有便利商店，建議在瀨之本休息站（Senomoto Rest House）購足所需物品。</div>
+                </div>
+              </div>
+
+              <div class="tRow">
+                <div><div class="time"></div></div>
+                <div>
+                  <div class="galleryWrap alignWithMain" aria-label="旅館華柚照片">
+                    <p class="galleryTitle">📷 旅館華柚</p>
+                    <div class="galleryRow" role="list">
+                      <div class="gItem" role="listitem" data-caption="瀨之本休息站｜外觀"><img loading="lazy" src="day2/22.jpg" data-full="day2/22.jpg" alt="瀨之本休息站"></div>
+                      <div class="gItem" role="listitem" data-caption="旅館華柚｜庭園入口"><img loading="lazy" src="day2/23.jpg" data-full="day2/23.jpg" alt="旅館華柚 庭園"></div>
+                      <div class="gItem" role="listitem" data-caption="旅館華柚｜日式庭園與建築"><img loading="lazy" src="day2/24.jpg" data-full="day2/24.jpg" alt="旅館華柚 建築"></div>
+                      <div class="gItem" role="listitem" data-caption="旅館華柚｜露天溫泉"><img loading="lazy" src="day2/25.jpg" data-full="day2/25.jpg" alt="旅館華柚 溫泉"></div>
+                      <div class="gItem" role="listitem" data-caption="九重高原櫻花景色"><img loading="lazy" src="day2/26.jpg" data-full="day2/26.jpg" alt="九重高原櫻花"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="links">
+              <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=%E5%B1%B1%E7%94%B0%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%A8%E3%83%AA%E3%82%A2%20%28%E4%B8%8B%E3%82%82%E3%82%8A%29&travelmode=driving">🚗 休息站｜山田SA（建議）</a>
+              <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=%E7%8E%96%E7%8F%A0%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%A8%E3%83%AA%E3%82%A2%20%28%E4%B8%8B%E3%82%82%E3%82%8A%29&travelmode=driving">🚗 休息站｜玖珠SA（次要）</a>
+              <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=%E6%B9%AF%E5%B8%83%E9%99%A2%E4%B8%AD%E5%A4%AE%E5%85%90%E7%AB%A5%E5%85%AC%E5%9C%92&travelmode=driving">🚗 導航｜中央児童公園</a>
+              <a class="btn" target="_blank" rel="noopener" href="https://maps.google.com/?daddr=%E9%87%91%E9%B1%97%E6%B9%96&directionsmode=driving">🚗 導航｜金鱗湖</a>
+              <a class="btn" target="_blank" rel="noopener" href="https://maps.google.com/?daddr=%E7%8B%AD%E9%9C%A7%E5%8F%B0&directionsmode=driving">🚗 導航｜狭霧台</a>
+              <a class="btn" target="_blank" rel="noopener" href="https://maps.google.com/?daddr=%E4%B9%9D%E9%87%8D%E5%A4%A2%E5%A4%A7%E5%90%8A%E6%A9%8B&directionsmode=driving">🚗 導航｜九重夢大吊橋</a>
+              <a class="btn" target="_blank" rel="noopener" href="https://maps.google.com/?daddr=%E7%80%AC%E3%81%AE%E6%9C%AC%E3%83%AC%E3%82%B9%E3%83%88%E3%83%8F%E3%82%A6%E3%82%B9&directionsmode=driving">🛒 導航｜瀨之本休息站</a>
+              <a class="btn" target="_blank" rel="noopener" href="https://maps.google.com/?daddr=%E6%97%85%E9%A4%A8%E8%8F%AF%E6%9F%9A%20%E7%94%B1%E5%B8%83%E9%99%A2&directionsmode=driving">🏨 導航｜旅館華柚</a>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      function qs(sel, root){ return (root||document).querySelector(sel); }
+      function qsa(sel, root){ return Array.from((root||document).querySelectorAll(sel)); }
+
+      // captions fallback：沒寫 data-caption 就用 img alt
+      qsa('.galleryRow .gItem').forEach(function(item){
+        var img = item.querySelector('img');
+        if(!img) return;
+        var cap = (item.getAttribute('data-caption')||'').trim();
+        if(cap) return;
+        var alt = (img.getAttribute('alt')||'').trim();
+        if(alt) item.setAttribute('data-caption', alt);
+      });
+
+      // lightbox
+      function initLightbox(){
+        if(!qs('.lbModal')){
+          var lb = document.createElement('div');
+          lb.className = 'lbModal';
+          lb.innerHTML = ''
+            + '<div class="lbBackdrop" data-lb-close></div>'
+            + '<div class="lbStage"><img class="lbImg" alt="" /></div>'
+            + '<div class="lbNav">'
+            + '  <button class="lbBtn" type="button" data-lb-prev aria-label="上一張">‹</button>'
+            + '  <button class="lbBtn" type="button" data-lb-next aria-label="下一張">›</button>'
+            + '  <span class="lbCount" data-lb-count>0/0</span>'
+            + '</div>'
+            + '<button class="lbClose" type="button" data-lb-close aria-label="關閉">✕</button>';
+          document.body.appendChild(lb);
+        }
+
+        var modal = qs('.lbModal');
+        var stage = qs('.lbStage', modal);
+        var imgEl = qs('.lbImg', modal);
+        var countEl = qs('[data-lb-count]', modal);
+        var list = [], idx = 0;
+
+        function openAt(i){
+          if(!list.length) return;
+          idx = (i + list.length) % list.length;
+          imgEl.src = list[idx];
+          countEl.textContent = String(idx + 1) + '/' + String(list.length);
+          modal.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+        function close(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+        function next(){ openAt(idx + 1); }
+        function prev(){ openAt(idx - 1); }
+
+        modal.addEventListener('click', function(e){
+          if(e.target && e.target.closest && e.target.closest('[data-lb-close]')) close();
+        });
+        qs('[data-lb-next]', modal).addEventListener('click', function(e){ e.stopPropagation(); next(); });
+        qs('[data-lb-prev]', modal).addEventListener('click', function(e){ e.stopPropagation(); prev(); });
+
+        window.addEventListener('keydown', function(e){
+          if(!modal.classList.contains('open')) return;
+          if(e.key === 'Escape') close();
+          if(e.key === 'ArrowRight') next();
+          if(e.key === 'ArrowLeft') prev();
+        });
+
+        document.addEventListener('click', function(e){
+          var thumb = e.target && e.target.closest && e.target.closest('.galleryRow .gItem img');
+          if(!thumb) return;
+          if(thumb.getAttribute('data-no-lightbox') === '1') return; // PDF 封面照常開 PDF
+
+          var row = thumb.closest('.galleryRow');
+          var imgs = qsa('.gItem img', row);
+          list = imgs.map(function(x){ return x.getAttribute('data-full') || x.currentSrc || x.src; });
+          openAt(imgs.indexOf(thumb));
+        }, { passive:true });
+
+        // swipe
+        var tsx=0, tsy=0, tlx=0, tly=0, tracking=false, TH=50;
+        stage.addEventListener('touchstart', function(e){
+          if(!modal.classList.contains('open')) return;
+          if(!e.touches || e.touches.length !== 1) return;
+          var t = e.touches[0];
+          tsx = tlx = t.clientX; tsy = tly = t.clientY; tracking = true;
+        }, { passive:true });
+        stage.addEventListener('touchmove', function(e){
+          if(!tracking || !e.touches || e.touches.length !== 1) return;
+          var t = e.touches[0]; tlx = t.clientX; tly = t.clientY;
+        }, { passive:true });
+        stage.addEventListener('touchend', function(){
+          if(!tracking) return;
+          var dx = tlx - tsx, dy = tly - tsy;
+          if(Math.abs(dx) > TH && Math.abs(dx) > Math.abs(dy) * 1.2){
+            if(dx < 0) next(); else prev();
+          }
+          tracking = false;
+        }, { passive:true });
+      }
+
+      window.addEventListener('DOMContentLoaded', function(){
+        try{ initLightbox(); }catch(e){ console.warn('[Day2] lightbox init error', e); }
+      });
+    })();
+  </script>
+</body>
+</html>
